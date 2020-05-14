@@ -18,29 +18,51 @@ namespace Xtensible.StraightRazor.FunctionTest
 {
 	public static class Function1
 	{
+		static RazorRenderer Engine = new RazorRenderer(typeof(Function1).Assembly);
 		[FunctionName("Index")]
 		public static async Task<IActionResult> Run(
 			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]
 			HttpRequest req,
 			ILogger log)
 		{
-			var engine = new RazorRenderer(typeof(Function1).Assembly);
-			return await engine.ViewAsync("Index", new ViewModel {Name = "Ted"});
+			return await Engine.ViewAsync("Index", new ViewModel {Name = "Ted"});
 
 
 
 		}
 
-		[FunctionName("WildcardExample")]
-		public static async Task<ActionResult> WildcardExample(
+		[FunctionName("Image")]
+		public static ActionResult Image(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
 				Route = "img/{*restOfPath}")] 
 			HttpRequest req,
 			string restOfPath)
 		{
 
-			
-			return new OkObjectResult(new {Route = restOfPath});
+			return Engine.Image(restOfPath);
 		}
-}
+
+		[FunctionName("Style")]
+		public static ActionResult Style(
+			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
+				Route = "css/{*restOfPath}")]
+			HttpRequest req,
+			string restOfPath)
+		{
+
+			return Engine.Style(restOfPath);
+		}
+
+		[FunctionName("Scripts")]
+		public static ActionResult Scripts(
+			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
+				Route = "scripts/{*restOfPath}")]
+			HttpRequest req,
+			string restOfPath)
+		{
+
+			return Engine.Script(restOfPath);
+		}
+
+	}
 }
