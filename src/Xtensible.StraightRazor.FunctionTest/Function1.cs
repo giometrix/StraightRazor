@@ -25,12 +25,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 			ILogger log)
 		{
 			var engine = new RazorRenderer(typeof(Function1).Assembly);
-			var html = await engine.RenderAsync("Index", new ViewModel {Name = "Ted"});
-			return new ContentResult
-			{
-				Content = html,
-				ContentType = "text/html"
-			};
+			return await engine.ViewAsync("Index", new ViewModel {Name = "Ted"});
 
 
 

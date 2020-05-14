@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using RazorLight;
 
 namespace Xtensible.StraightRazor.Core
@@ -35,6 +37,18 @@ namespace Xtensible.StraightRazor.Core
 			}
 
 			return Engine.CompileRenderAsync<T>(viewName, model, viewBag);
+		}
+
+		public async Task<ContentResult> ViewAsync<T>(string viewName, T model = null, ExpandoObject viewBag = null)
+			where T : class
+		{
+			var html = await RenderAsync(viewName, model, viewBag).ConfigureAwait(false);
+			return new ContentResult
+			{
+				ContentType = "text/html",
+				Content = html,
+				StatusCode = StatusCodes.Status200OK
+			};
 		}
 
 		private string GetApplicationRoot()
