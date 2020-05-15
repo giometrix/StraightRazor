@@ -21,7 +21,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 		static RazorRenderer Engine = new RazorRenderer(typeof(Function1).Assembly);
 		[FunctionName("Index")]
 		public static async Task<IActionResult> Run(
-			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]
+			[HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]
 			HttpRequest req,
 			ILogger log)
 		{
@@ -35,7 +35,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 		public static ActionResult Image(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
 				Route = "img/{*restOfPath}")] 
-			HttpRequest req,
+			HttpRequest req, ExecutionContext context,
 			string restOfPath)
 		{
 
@@ -46,7 +46,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 		public static ActionResult Style(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
 				Route = "css/{*restOfPath}")]
-			HttpRequest req,
+			HttpRequest req, ExecutionContext context,
 			string restOfPath)
 		{
 
@@ -57,7 +57,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 		public static ActionResult Scripts(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
 				Route = "scripts/{*restOfPath}")]
-			HttpRequest req,
+			HttpRequest req, ExecutionContext context,
 			string restOfPath)
 		{
 
