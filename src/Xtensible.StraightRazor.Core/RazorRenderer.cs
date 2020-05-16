@@ -17,14 +17,17 @@ namespace Xtensible.StraightRazor.Core
 	public class RazorRenderer
 	{
 
+		private IHttpContextAccessor HttpContextAccessor { get; }
 		private RazorLightEngine Engine { get; }
 		private string ImageRoot { get; }
 		private string StyleRoot { get; }
 		private string ScriptRoot { get; }
+		private RazorRendererOptions Options { get; }
 
-		public RazorRenderer(Assembly operatingAssembly, RazorRendererOptions options = null)
+		public RazorRenderer(Assembly operatingAssembly, IHttpContextAccessor httpContextAccessor, RazorRendererOptions options = null)
 		{
 			options ??= new RazorRendererOptions();
+			Options = options;
 
 			var rootDir = GetApplicationRoot();
 
@@ -38,6 +41,7 @@ namespace Xtensible.StraightRazor.Core
 			ImageRoot = Path.Combine(rootDir, options.ImageRoot);
 			StyleRoot = Path.Combine(rootDir, options.StyleRoot);
 			ScriptRoot = Path.Combine(rootDir, options.ScriptRoot);
+			HttpContextAccessor = httpContextAccessor;
 
 		}
 
@@ -51,9 +55,12 @@ namespace Xtensible.StraightRazor.Core
 			return Engine.CompileRenderAsync<T>(viewName, model, viewBag);
 		}
 
-		public async Task<ContentResult> ViewAsync<T>(string viewName, T model = null, ExpandoObject viewBag = null)
+		public async Task<ContentResult> ViewAsync<T>(string viewName, T model = null, ExpandoObject viewBag = null, ResponseOptions responseOptions = null)
 			where T : class
 		{
+			responseOptions ??= Options.DefaultPageResponseOptions;
+			HttpContextAccessor.HttpContext.Response.Headers.Add("Cache-Control", responseOptions.CacheHeader.ToString());
+
 			var html = await RenderAsync(viewName, model, viewBag).ConfigureAwait(false);
 			return new ContentResult
 			{
@@ -63,26 +70,30 @@ namespace Xtensible.StraightRazor.Core
 			};
 		}
 
-		public ActionResult Image(string path)
+		public ActionResult Image(string path, ResponseOptions responseOptions = null)
 		{
 			path = Path.Combine(ImageRoot, path);
-			return StaticFile(path);
+			return StaticFile(path, responseOptions);
 		}
 
-		public ActionResult Style(string path)
+		public ActionResult Style(string path, ResponseOptions responseOptions = null)
 		{
 			path = Path.Combine(StyleRoot, path);
-			return StaticFile(path);
+			return StaticFile(path, responseOptions);
 		}
 
-		public ActionResult Script(string path)
+		public ActionResult Script(string path, ResponseOptions responseOptions = null)
 		{
 			path = Path.Combine(ScriptRoot, path);
-			return StaticFile(path);
+			return StaticFile(path, responseOptions);
 		}
 
-		public ActionResult StaticFile(string path)
+		public ActionResult StaticFile(string path, ResponseOptions responseOptions)
 		{
+			responseOptions ??= Options.DefaultPageResponseOptions;
+			HttpContextAccessor.HttpContext.Response.Headers.Add("Cache-Control", responseOptions.CacheHeader.ToString());
+
+
 			if (File.Exists(path))
 			{
 				var file = new FileInfo(path);

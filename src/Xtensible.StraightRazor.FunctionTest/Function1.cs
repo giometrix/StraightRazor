@@ -16,11 +16,16 @@ using Xtensible.StraightRazor.FunctionTest.Models;
 
 namespace Xtensible.StraightRazor.FunctionTest
 {
-	public static class Function1
+	public class Function1
 	{
-		static RazorRenderer Engine = new RazorRenderer(typeof(Function1).Assembly);
+		private RazorRenderer Engine { get; }
+
+		public Function1(RazorRenderer engine)
+		{
+			Engine = engine;
+		}
 		[FunctionName("Index")]
-		public static async Task<IActionResult> Run(
+		public async Task<IActionResult> Run(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]
 			HttpRequest req,
 			ILogger log)
@@ -32,7 +37,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 		}
 
 		[FunctionName("Image")]
-		public static ActionResult Image(
+		public ActionResult Image(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
 				Route = "img/{*restOfPath}")] 
 			HttpRequest req, ExecutionContext context,
@@ -43,7 +48,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 		}
 
 		[FunctionName("Style")]
-		public static ActionResult Style(
+		public ActionResult Style(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
 				Route = "css/{*restOfPath}")]
 			HttpRequest req, ExecutionContext context,
@@ -54,7 +59,7 @@ namespace Xtensible.StraightRazor.FunctionTest
 		}
 
 		[FunctionName("Scripts")]
-		public static ActionResult Scripts(
+		public ActionResult Scripts(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get",
 				Route = "scripts/{*restOfPath}")]
 			HttpRequest req, ExecutionContext context,
