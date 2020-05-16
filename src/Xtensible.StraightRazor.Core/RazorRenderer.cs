@@ -90,7 +90,7 @@ namespace Xtensible.StraightRazor.Core
 
 		public ActionResult StaticFile(string path, ResponseOptions responseOptions)
 		{
-			responseOptions ??= Options.DefaultPageResponseOptions;
+			responseOptions ??= Options.DefaultStaticFileResponseOptions;
 			HttpContextAccessor.HttpContext.Response.Headers.Add("Cache-Control", responseOptions.CacheHeader.ToString());
 
 
