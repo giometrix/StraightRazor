@@ -4,6 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <PreserveCompilationContext>true</PreserveCompilationContext>
 	  <LangVersion>latest</LangVersion>
+	  <Version>0.1.0-alpha</Version>
+	  <Authors>Giovanni Galbo</Authors>
+	  <Company>Xtensible Web Solutions</Company>
+	  <Description>Render razor pages from Azure Functions</Description>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
